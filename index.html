@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        html,
+        body {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            vertical-align: top;
+            background: #343334;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #id {
+            width: 300px;
+            height: 300px;
+            position: relative;
+        }
+
+        #range {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            appearance: none;
+            background: linear-gradient(to right, #6485e6, #6485e6) #000 no-repeat;
+            background-size: 0% 100%;
+            height: 6px;
+            width: 200px;
+            border-radius: 3px;
+        }
+
+        #range::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: red;
+            box-shadow:  0px 0px 12px 1px #fff ,inset 0px  0px 12px 1px #fff;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #h2 {
+            --i: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            color: #fff;
+            text-shadow: -1px -1px var(--i) #6485e6, 1px 1px var(--i) #6485e6, 1px 0 var(--i) #6485e6, 0 1px var(--i) #6485e6;
+            font-weight: bold;
+            transform: translate(-50%, -50%);
+            user-select: none;
+        }
+
+        .span {
+            position: absolute;
+            background-color: #000;
+            width: 3px;
+            height: 12px;
+            display: block;
+            transform-origin: center 100px;
+            top: 50px;
+            left: 145px;
+            transition:  1s;
+        }
+        #sp{
+            white-space: pre;
+        }
+    </style>
+</head>
+
+<body>
+<div id="id">
+    <h2 id="h2">0%</h2>
+    <label for="range"></label><input id="range" value="0" type="range">
+    <button id="add">加速</button>
+    <span id="sp">0</span>
+    <button id="sub">减速</button>
+</div>
+<script>
+    var range = document.getElementById("range")
+    var id = document.getElementById("id")
+    var add = document.getElementById("add")
+    var sub = document.getElementById("sub")
+    var sp = document.getElementById("sp")
+    for (let i = 0; i < 100; i++) {
+        var span = document.createElement("span")
+        span.className="span"
+        span.setAttribute("data-i", i)
+        span.style.transform = `rotateZ(${360 / 100 * (i)}deg)`;
+        id.appendChild(span)
+    }
+    range.addEventListener("input", function () {
+        this.style.backgroundSize = `${this.value}% 100%`
+        h2.innerHTML = `${this.value}%`
+        var self = this
+        var spans = document.getElementsByClassName("span")
+        var a = Array.from(spans).filter(e => {
+            return Number(e.getAttribute("data-i")) <= self.value
+        })
+        var b = Array.from(spans).filter(e => {
+            return Number(e.getAttribute("data-i")) >= self.value
+        })
+        a.forEach(d => {
+            d.style.background = `hsl(${360 / 100 * Number(d.getAttribute('data-i'))}deg,100%,50%)`
+            d.style.boxShadow = `0px 0px 11px 1px hsl(${360 / 100 * Number(d.getAttribute('data-i'))-60 }deg,100%,50%)`
+        })
+        b.forEach(d => {
+            d.style.background = `black`
+            d.style.boxShadow = "0px 0px 5px 1px transparent"
+        })
+    })
+    var n = 0,speed=1;
+    var flag = true;
+
+    add.addEventListener("click",()=>{
+        speed+=1
+        sp.innerText=speed.toString().padEnd(3)
+    })
+    sub.addEventListener("click",()=>{
+        speed-=1
+        sp.innerText=speed.toString().padEnd(3)
+
+    })
+    function updateValue() {
+        requestAnimationFrame(function () {
+            if (flag){
+                n+=speed
+                if(n>100){
+                    flag=false
+                }
+            }else{
+                n-=speed
+                if(n<0){
+                    flag=true
+                }
+            }
+                range.value = n
+            range.dispatchEvent(new Event("input"))
+            updateValue()
+        })
+    }
+    // updateValue()
+</script>
+</body>
+
+</html>
