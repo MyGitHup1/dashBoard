@@ -86,16 +86,10 @@
 <div id="id">
     <h2 id="h2">0%</h2>
     <label for="range"></label><input id="range" value="0" type="range">
-    <button id="add">加速</button>
-    <span id="sp">0</span>
-    <button id="sub">减速</button>
 </div>
 <script>
     var range = document.getElementById("range")
     var id = document.getElementById("id")
-    var add = document.getElementById("add")
-    var sub = document.getElementById("sub")
-    var sp = document.getElementById("sp")
     for (let i = 0; i < 100; i++) {
         var span = document.createElement("span")
         span.className="span"
@@ -153,7 +147,7 @@
             updateValue()
         })
     }
-    // updateValue()
+    updateValue()
 </script>
 </body>
 
